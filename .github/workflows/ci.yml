@@ -26,7 +26,7 @@ jobs:
     - name: Format
       run: crystal tool format --check
     - name: Install build dependencies
-      run: apk --no-cache add curl make
+      run: apk --no-cache add curl make m4
     - name: Build test server
       run: git clone https://github.com/nodertc/test-dtls-server && cd test-dtls-server && make
     - name: Start test server
