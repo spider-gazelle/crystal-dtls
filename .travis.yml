@@ -1,8 +1,0 @@
-language: crystal
-install:
-  - shards install
-  - git clone https://github.com/nodertc/test-dtls-server
-  - cd test-dtls-server && make
-  - cd test-dtls-server && export CERTFILE=./cert-rsa.pem && export KEYFILE=./key-rsa.pem && ./dtlsd &
-script:
-  - crystal spec

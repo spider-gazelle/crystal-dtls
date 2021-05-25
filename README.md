@@ -1,6 +1,6 @@
 # Crystal Lang DTLS Support
 
-[![Build Status](https://travis-ci.com/spider-gazelle/crystal-dtls.svg?branch=master)](https://travis-ci.com/github/spider-gazelle/crystal-dtls)
+[![CI](https://github.com/spider-gazelle/crystal-dtls/actions/workflows/ci.yml/badge.svg)](https://github.com/spider-gazelle/crystal-dtls/actions/workflows/ci.yml)
 
 Communicate over UDP securely with DTLS
 

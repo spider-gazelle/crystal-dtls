@@ -1,0 +1,31 @@
+name: CI
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1"
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        crystal:
+          - latest
+          - nightly
+          - 1.0.0
+    runs-on: ${{ matrix.os }}
+    container: crystallang/crystal:${{ matrix.crystal }}-alpine
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: shards install --ignore-crystal-version
+    - name: Lint
+      run: ./bin/ameba
+    - name: Format
+      run: crystal tool format --check
+    - name: Start test server
+      run: git clone https://github.com/nodertc/test-dtls-server && cd test-dtls-server && make && export CERTFILE=./cert-rsa.pem && export KEYFILE=./key-rsa.pem && ./dtlsd &
+    - name: Run tests
+      run: crystal spec -v --error-trace
