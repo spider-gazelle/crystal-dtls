@@ -30,6 +30,6 @@ jobs:
     - name: Build test server
       run: git clone https://github.com/nodertc/test-dtls-server && cd test-dtls-server && make
     - name: Start test server
-      run: export CERTFILE=./cert-rsa.pem && export KEYFILE=./key-rsa.pem && ./dtlsd &
+      run: cd test-dtls-server && export CERTFILE=./cert-rsa.pem && export KEYFILE=./key-rsa.pem && ./dtlsd &
     - name: Run tests
       run: crystal spec -v --error-trace
