@@ -25,6 +25,8 @@ jobs:
       run: ./bin/ameba
     - name: Format
       run: crystal tool format --check
+    - name: Install build dependencies
+      run: apk --no-cache add curl make
     - name: Start test server
       run: git clone https://github.com/nodertc/test-dtls-server && cd test-dtls-server && make && export CERTFILE=./cert-rsa.pem && export KEYFILE=./key-rsa.pem && ./dtlsd &
     - name: Run tests
