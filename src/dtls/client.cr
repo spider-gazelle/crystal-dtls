@@ -133,6 +133,7 @@ abstract class DTLS::Socket < IO
     end
   {% end %}
 
+  # ameba:disable Metrics/CyclomaticComplexity
   def unbuffered_close
     return if @closed
     @closed = true
