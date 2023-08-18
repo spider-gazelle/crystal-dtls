@@ -1,9 +1,13 @@
+require "socket"
 require "./bio"
 
 lib LibSSL
   DTLS1_VERSION                  = 0xFEFF
   DTLS1_2_VERSION                = 0xFEFD
   SSL_CTRL_SET_MIN_PROTO_VERSION =    123
+
+  # not required
+  # fun dtls_client_method = DTLS_client_method : SSLMethod
 end
 
 abstract class DTLS::Socket < IO
@@ -23,7 +27,7 @@ abstract class DTLS::Socket < IO
           {% if compare_versions(LibSSL::OPENSSL_VERSION, "1.0.2") >= 0 %}
             param = LibSSL.ssl_get0_param(@ssl)
 
-            if ::Socket.ip?(hostname)
+            if ::Socket::IPAddress.valid?(hostname)
               unless LibCrypto.x509_verify_param_set1_ip_asc(param, hostname) == 1
                 raise OpenSSL::Error.new("X509_VERIFY_PARAM_set1_ip_asc")
               end

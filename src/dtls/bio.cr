@@ -64,6 +64,10 @@ struct DTLS::BIO
               1
             when BIO_CTRL_WPENDING, BIO_CTRL_PUSH, BIO_CTRL_POP, BIO_CTRL_DGRAM_SET_NEXT_TIMEOUT
               0
+            when LibCrypto::CTRL_SET_KTLS_SEND
+              0
+            when LibCrypto::CTRL_GET_KTLS_SEND, LibCrypto::CTRL_GET_KTLS_RECV
+              0
             when BIO_CTRL_DGRAM_QUERY_MTU, BIO_CTRL_DGRAM_GET_FALLBACK_MTU
               1500
             when BIO_CTRL_DGRAM_GET_MTU_OVERHEAD

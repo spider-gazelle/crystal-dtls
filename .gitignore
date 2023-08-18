@@ -6,3 +6,6 @@ app
 *.dwarf
 *.DS_Store
 bin
+yourcert.pem
+yourkey.pem
+dtls_server
