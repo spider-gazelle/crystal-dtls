@@ -51,7 +51,7 @@ def launch_dtls_server(shutdown_channel : Channel(Nil))
       error: :inherit
     ) do |process|
       # signal when the process is running
-      sleep 1
+      sleep 1.second
       puts "[ready]"
       ready_channel.send nil
 

@@ -2,7 +2,7 @@ require "../dtls"
 
 struct DTLS::BIO
   def self.get_data(bio) : Void*
-    {% if compare_versions(LibCrypto::OPENSSL_VERSION, "1.1.0") >= 0 %}
+    {% if LibCrypto.has_method?(:BIO_get_data) %}
       LibCrypto.BIO_get_data(bio)
     {% else %}
       bio.value.ptr
@@ -10,7 +10,7 @@ struct DTLS::BIO
   end
 
   def self.set_data(bio, data : Void*)
-    {% if compare_versions(LibCrypto::OPENSSL_VERSION, "1.1.0") >= 0 %}
+    {% if LibCrypto.has_method?(:BIO_set_data) %}
       LibCrypto.BIO_set_data(bio, data)
     {% else %}
       bio.value.ptr = data
@@ -86,7 +86,7 @@ struct DTLS::BIO
     end
 
     create = LibCrypto::BioMethodCreate.new do |bio|
-      {% if compare_versions(LibCrypto::OPENSSL_VERSION, "1.1.0") >= 0 %}
+      {% if LibCrypto.has_method?(:BIO_set_shutdown) %}
         LibCrypto.BIO_set_shutdown(bio, 1)
         LibCrypto.BIO_set_init(bio, 1)
         # bio.value.num = -1
@@ -103,10 +103,10 @@ struct DTLS::BIO
       1
     end
 
-    {% if compare_versions(LibCrypto::OPENSSL_VERSION, "1.1.0") >= 0 %}
+    {% if LibCrypto.has_method?(:BIO_meth_new) %}
       biom = LibCrypto.BIO_meth_new(Int32::MAX, "DTLS BIO")
 
-      {% if compare_versions(LibCrypto::OPENSSL_VERSION, "1.1.1") >= 0 %}
+      {% if LibCrypto.has_method?(:BIO_meth_set_write_ex) %}
         LibCrypto.BIO_meth_set_write_ex(biom, bwrite_ex)
         LibCrypto.BIO_meth_set_read_ex(biom, bread_ex)
       {% else %}

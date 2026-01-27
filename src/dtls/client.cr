@@ -55,7 +55,7 @@ abstract class DTLS::Socket < IO
       end
     end
 
-    def self.open(io, context : Context::Client = Context::Client.new(LibSSL.dtls_method), sync_close : Bool = false, hostname : String? = nil)
+    def self.open(io, context : Context::Client = Context::Client.new(LibSSL.dtls_method), sync_close : Bool = false, hostname : String? = nil, &)
       socket = new(io, context, sync_close, hostname)
 
       begin
