@@ -34,10 +34,21 @@ jobs:
     - name: Install dependencies
       run: shards install --ignore-crystal-version --without-development
     - name: Install build dependencies
-      run: apt update && apt -y install curl make m4
+      run: apt update && apt -y install curl make m4 xz-utils
     - name: Build test server
-      run: git clone https://github.com/nodertc/test-dtls-server && cd test-dtls-server && make
+      run: |
+        git clone https://github.com/nodertc/test-dtls-server
+        cd test-dtls-server
+        # gmplib.org rate-limits/blocks CI downloads; use the reliable GNU mirror.
+        sed -i 's#https://gmplib.org/download/gmp/gmp-6.1.2.tar.xz#https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.xz#' Makefile
+        # nettle installs into build/lib64 but gnutls links -L build/lib; unify libdirs.
+        mkdir -p build/lib && ln -s lib build/lib64
+        make
     - name: Start test server
-      run: cd test-dtls-server && export CERTFILE=./cert-rsa.pem && export KEYFILE=./key-rsa.pem && ./dtlsd &
+      run: |
+        cd test-dtls-server
+        export CERTFILE=./cert-rsa.pem KEYFILE=./key-rsa.pem
+        export LD_LIBRARY_PATH="$PWD/build/lib"
+        ./dtlsd &
     - name: Run tests
       run: crystal spec -v --error-trace
