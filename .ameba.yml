@@ -1,0 +1,6 @@
+# Ameba configuration
+# https://github.com/veelenga/ameba
+
+# Keep intentional TODO/FIXME notes as comments without failing the build.
+Documentation/DocumentationAdmonition:
+  Enabled: false
