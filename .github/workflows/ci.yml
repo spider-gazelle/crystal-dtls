@@ -33,22 +33,10 @@ jobs:
     # so skip development dependencies here. Linting runs in the dedicated lint job.
     - name: Install dependencies
       run: shards install --ignore-crystal-version --without-development
+    # The spec compiles examples/dtls_server.cpp (an OpenSSL DTLS echo server)
+    # with g++ and launches it itself, so we just need a C++ toolchain and the
+    # OpenSSL development headers.
     - name: Install build dependencies
-      run: apt update && apt -y install curl make m4 xz-utils
-    - name: Build test server
-      run: |
-        git clone https://github.com/nodertc/test-dtls-server
-        cd test-dtls-server
-        # gmplib.org rate-limits/blocks CI downloads; use the reliable GNU mirror.
-        sed -i 's#https://gmplib.org/download/gmp/gmp-6.1.2.tar.xz#https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.xz#' Makefile
-        # nettle installs into build/lib64 but gnutls links -L build/lib; unify libdirs.
-        mkdir -p build/lib && ln -s lib build/lib64
-        make
-    - name: Start test server
-      run: |
-        cd test-dtls-server
-        export CERTFILE=./cert-rsa.pem KEYFILE=./key-rsa.pem
-        export LD_LIBRARY_PATH="$PWD/build/lib"
-        ./dtlsd &
+      run: apt update && apt -y install g++ libssl-dev
     - name: Run tests
       run: crystal spec -v --error-trace
