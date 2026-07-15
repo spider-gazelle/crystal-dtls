@@ -1,19 +1,21 @@
 require "../dtls"
 
-# Older Crystal releases exposed named aliases for the BIO method callback
-# signatures. Newer releases declare them inline on the `fun`s instead, so we
-# reopen `LibCrypto` and define the aliases this shard relies on.
-lib LibCrypto
-  # Renamed to CTRL_SET_KTLS in newer Crystal releases.
-  CTRL_SET_KTLS_SEND = 72
+# Newer Crystal releases (1.19+) declare CTRL_SET_KTLS_SEND and the BioMethod*
+# aliases in the stdlib's `LibCrypto` themselves, so only define them on older
+# releases to avoid "already initialized constant" / "already defined" errors.
+{% unless LibCrypto.has_constant?("CTRL_SET_KTLS_SEND") %}
+  lib LibCrypto
+    # Renamed to CTRL_SET_KTLS in newer Crystal releases.
+    CTRL_SET_KTLS_SEND = 72
 
-  alias BioMethodWriteOld = (Bio*, Char*, Int) -> Int
-  alias BioMethodReadOld = (Bio*, Char*, Int) -> Int
-  alias BioMethodWrite = (Bio*, Char*, SizeT, SizeT*) -> Int
-  alias BioMethodCtrl = (Bio*, Int, Long, Void*) -> Long
-  alias BioMethodCreate = (Bio*) -> Int
-  alias BioMethodDestroy = (Bio*) -> Int
-end
+    alias BioMethodWriteOld = (Bio*, Char*, Int) -> Int
+    alias BioMethodReadOld = (Bio*, Char*, Int) -> Int
+    alias BioMethodWrite = (Bio*, Char*, SizeT, SizeT*) -> Int
+    alias BioMethodCtrl = (Bio*, Int, Long, Void*) -> Long
+    alias BioMethodCreate = (Bio*) -> Int
+    alias BioMethodDestroy = (Bio*) -> Int
+  end
+{% end %}
 
 struct DTLS::BIO
   def self.get_data(bio) : Void*
